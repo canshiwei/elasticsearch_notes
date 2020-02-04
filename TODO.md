@@ -9,3 +9,4 @@ TODO:
 	* bully algorithm
 	* how more than half of quorum solve the problem
 	https://www.elastic.co/guide/en/elasticsearch/guide/2.x/important-configuration-changes.html#_minimum_master_nodes
+5. 02_BasicOperation m_search

@@ -27,7 +27,7 @@
   * _type: type of the document
   * _id: unique id for document
   * _source: original JSON data
-  * _version: version of the document. (ES version)
+  * _version: version of the document.
   * _score: searching related score
 * Example: 
     ```
