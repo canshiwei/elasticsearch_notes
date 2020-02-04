@@ -2,7 +2,7 @@
 
 ## Index APIs
 
-### Get Index Information
+#### Get Index Information
 
 ```
 GET movies
@@ -53,20 +53,34 @@ GET /_cat/indices/kibana*?pri&v&h=health,index,pri,rep,docs.count,mt
 
 * [Detailed API document](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html)
 
-### Verbose
+#### Get Node information
+
+```
+GET _cat/nodes
+```
+
+#### Get Shards information
+
+```
+GET _cat/shards
+```
+
+### Common parameters
+
+#### Verbose
 
 ```
 GET /_cat/master?v
 ```
 
-### Header
+#### Header
 Force the columns to appear
 
 ```
 GET /_cat/nodes?h=ip,port,heapPercent,name
 ```
 
-### Sort
+#### Sort
 Sort the column specified, where `desc` inver the ordering of column, `:asc` exhibits the same behavior as the defauklt sort order.
 
 ```

@@ -98,6 +98,19 @@
   * Every segment composed of multiple field
   * Every field associate with multiple term
   ![](./img/index_shard.png)
+* Setting of index sharding:
+  * Primary shards cannot be modified after created
+  ```
+  PUT /blogs
+  {
+    "settings": {
+      "number_of_shards": 3,
+      "number_of_replicas": 1
+    }
+  }
+  ```
+* Example: shards stored on nodes
+  ![](./img/shardeg.png)
     
 
 ### Cluster
@@ -108,17 +121,67 @@
   * Dynamo:
     * Cassandra
 * Role of Nodes
-  * Master Node:
-    * Manipulate cluster related operation
-    * Set `node.master: true` enable the node qualified to be choosed as master
-    * Unique in the cluster
+  * **Master-eligible Node**:
+    * Default as Master-eligible Node when a node starts
+    * Master-eligible Node can be elected as master
     * Each Master-eligible node should know the number of Master-eligible nodes. 
     * To avoid multiple master been elected (brain split) when network partition, setting of `discovery.zen.minimum_master_nodes` as the result of `(master_eligible_nodes / 2) + 1`
-  * Data Node: store data that contains indexed document. Set `node.data: true` enable node to be a data node
-  * Ingest Node: A way to process a document in pipeline mode before indexing the document. Set `node.ingest: true` to enable ingest.
-  * Coordinating Node: if all three roles are disabled, the node will only act as a coordination node that perform routing request.  
-  
+  * **Master Node**:
+    * Master node stores the status of cluster, only cluster node can modify the cluster status
+      * Cluster status maintain the necessary informatino for cluster
+        * Information of every nodes
+        * Every mapping and setting information of index
+        * Route table for shards
+    * Unique in the cluster
+  * **Data Node**: 
+    * store data that contains indexed document.
+  * **Ingest Node**:
+    * A way to process a document in pipeline mode before indexing the document. Set `node.ingest: true` to enable ingest.
+  * **Coordinating Node**:
+    * If all three roles are disabled, the node will only act as a coordination node that perform routing request.
+    * Nodes are coordinating nodes by default
+* Node Configuration
+  * Nodes can be multiple role
+  * In production, it's better to have a node with only one role
 
+  | Node role       | Setting     | Default   |
+  | :-------        | :--------   | :-------  |
+  | master eligible | node.master | true      |
+  | data            | node.data   | true      |
+  | ingest          | node.ingest | true      |
+  | coordinating    | /           | true      |
+  | machine learning  | node.ml   | true (enable x-pack) |
+* Health of cluster
+  * Green: primary shards and replica are allocated successfully
+  * Yellow: primary shards are allocated successfully, but not for replica
+  * Red: primary shards are not allocated successfully
+  
+  ```
+  GET _cluster/health
+  ```
+
+  returns
+
+  ```
+  {
+    "cluster_name" : "mycluster",
+    "status" : "green",
+    "timed_out" : false,
+    "number_of_nodes" : 3,
+    "number_of_data_nodes" : 3,
+    "active_primary_shards" : 9,
+    "active_shards" : 18,
+    "relocating_shards" : 0,
+    "initializing_shards" : 0,
+    "unassigned_shards" : 0,
+    "delayed_unassigned_shards" : 0,
+    "number_of_pending_tasks" : 0,
+    "number_of_in_flight_fetch" : 0,
+    "task_max_waiting_in_queue_millis" : 0,
+    "active_shards_percent_as_number" : 100.0
+  }
+  ```
+  
 ## Basic Elasticsearch configuration
 * config folder: 
   * elasticsearch.keystore
