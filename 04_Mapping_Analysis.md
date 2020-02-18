@@ -116,3 +116,153 @@
     }
     ```
 
+### Mapping Operation
+
+* Define a mapping
+
+    ```
+    PUT movies
+    {
+        "mappings": {
+            # ....
+        }
+    }
+    ```
+
+* Field indexing setting
+    * Field indexing setting defualt to be true
+    * If set the index to false, then this field cannot be searched
+
+    ```
+    PUT users
+    {
+        "mappings": {
+            "properties": {
+                "firstName": {
+                    "type": "text"
+                },
+                "lastName": {
+                    "type": "text"
+                },
+                "mobile": {
+                    "type": "text",
+                    "index": false
+                }
+            }
+        }
+    }
+
+    # The search below would fail
+    POST /users/_search
+    {
+        "query": {
+            "match": {
+            "mobile":"12345678"
+            }
+        }
+    }
+
+    # GET users/_search?q=mobile:12345678
+    ```
+
+* Index Options
+    * 4 types of index options
+        * docs: record `doc id`
+        * freqs: record `doc id and term frequencies`
+        * positions: record `doc id/ term frequencies/ term position`
+        * offsets: record `doc id/ term frequencies/ term position/ character offects`
+    * Text default as positions, remaining are docs
+
+    ```
+    PUT users
+    {
+        "mappings": {
+            "properties": {
+                "firstName": {
+                    "type": "text"
+                },
+                "lastName": {
+                    "type": "text"
+                },
+                "mobile": {
+                    "type": "text",
+                    "index": false
+                }
+                "bio": {
+                    "type": "text",
+                    "index_options": "offsets"
+                }
+            }
+        }
+    }
+    ```
+
+* null_value:
+    * Enable a field to be null and could be search
+
+    ```
+    PUT users
+    {
+        "mappings": {
+            "properties": {
+                "firstName": {
+                    "type": "text"
+                },
+                "lastName": {
+                    "type": "text"
+                },
+                "mobile": {
+                    "type": "text",
+                    "null_value": "NULL"
+                }
+            }
+        }
+    }
+    ```
+
+    returns:
+
+    ```
+    ...
+
+    "_source": {
+        "firstName": "canshi",
+        "lastName": "wei",
+        "mobile": null
+    }
+    ```
+
+* copy_to
+    * allows a non-existed filed to be search
+
+    ```
+    PUT users
+    {
+        "mappings": {
+            "properties": {
+                "firstName": {
+                    "type": "text",
+                    "copy_to": "fullName"
+                },
+                "lastName": {
+                    "type": "text",
+                    "copy_to": "fullName"
+                },
+            }
+        }
+    }
+
+    GET users/_search?q=fullName:(Canshi Wei)
+    ```
+
+* Array
+    * Not a true array, but a field contains multiple value
+    * The type of the field associated with multiple value is the type of the value
+
+    ```
+    PUT users/_doc/1
+    {
+        "name": "onebird",
+        "interests": ["reading", "music"]
+    }
+    ```

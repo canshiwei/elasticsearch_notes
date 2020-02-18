@@ -19,7 +19,7 @@ PUT my_index/_create/1
   "age": 24
 }
 
-// would result failure of operation
+# would result failure of operation
 POST my_index/_update/1
 {
   "name":{
@@ -28,7 +28,7 @@ POST my_index/_update/1
   }
 }
 
-// but this is a valid update
+# but this is a valid update
 POST my_index/_update/1
 {
   "doc": {
