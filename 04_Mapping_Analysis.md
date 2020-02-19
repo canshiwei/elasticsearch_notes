@@ -15,7 +15,7 @@
     | Character Filters --> Tokenizer --> Token Filters  |
     +----------------------------------------------------+
     ``` 
-    
+* **ES uses the `standard analyzer` for all text analysis**    
 * _analyzer API example
     ```
     GET /_analyze
