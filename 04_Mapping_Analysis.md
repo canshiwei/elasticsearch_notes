@@ -486,7 +486,7 @@
                 "lastName": {
                     "type": "text",
                     "copy_to": "fullName"
-                },
+                }
             }
         }
     }
