@@ -135,5 +135,5 @@
     * The MapReduce framework automatically handles parallel task scheduling, error detection and recovery
 
 ## Reference
-[HDFS Architecture Guide](https://hadoop.apache.org/docs/r1.0.4/hdfs_design.html)
+[HDFS Architecture Guide](https://hadoop.apache.org/docs/r1.0.4/hdfs_design.html) <br>
 [The Hadoop Distributed File System](https://storageconference.us/2010/Papers/MSST/Shvachko.pdf)
