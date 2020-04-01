@@ -160,61 +160,61 @@ Filter Context: No relativity score, better peformance with cache
 * filter: **Filter context**, no relativity score
 * Example
 
+```
+POST /products/_search
+{
+    "query": {
+        "bool": {
+            "must": {
+                "term": {"price": 30}
+            },
+            "filter": {
+                "term": {"avaliable": "true"}
+            },
+            "must_not": {
+                "range": {"price": {"lte": 10}}
+            },
+            "should": [
+                {"term": {"productID.keyword": "JODL-X-1937"}}
+                {"term": {"productID.keyword": "JODL-X-1937"}}
+            ],
+            "minimum_should_match": 1
+        }
+    }
+}
+```
+
+* Use bool query to sovle "equal problem"
+    * **Term Query - include but not equal**
+            
     ```
-    POST /products/_search
+    POST movies/_search
     {
         "query": {
-            "bool": {
-                "must": {
-                    "term": {"price": 30}
-                },
+            "constant_score": {
                 "filter": {
-                    "term": {"avaliable": "true"}
-                },
-                "must_not": {
-                    "range": {"price": {"lte": 10}}
-                },
-                "should": [
-                    {"term": {"productID.keyword": "JODL-X-1937"}}
-                    {"term": {"productID.keyword": "JODL-X-1937"}}
-                ],
-                "minimum_should_match": 1
+                    "term": {
+                        "genre.keyword": "Comedy"
+                    }
+                }
             }
         }
     }
     ```
 
-* Use bool query to sovle "equal problem"
-    * **Term Query - include but not equal**
-            
-            ```
-            POST movies/_search
-            {
-                "query": {
-                    "constant_score": {
-                        "filter": {
-                            "term": {
-                                "genre.keyword": "Comedy"
-                            }
-                        }
-                    }
-                }
-            }
-            ```
+    return
 
-            return
-
-            ```
-            {
-                "_index": "movies",
-                "_type": "_doc",
-                ...
-                "genre": [
-                    "Comedy"
-                    "Romance"
-                ]
-            }
-            ```
+    ```
+    {
+        "_index": "movies",
+        "_type": "_doc",
+        ...
+        "genre": [
+            "Comedy"
+            "Romance"
+        ]
+    }
+    ```
     * In business overview, add "count" to solve the issue
 
 * Different query structure influence computing score
@@ -475,51 +475,51 @@ POST blogs/_search
 * Most Fields
     * When use Englihs analyzer, fields with "-ing" would be convert to normal case. More field match the better it is.
     * Example:
-        ```
-        PUT titles
-        {
-            "mappings": {
-                "properties": {
-                    "title": {
-                        "type": "text",
-                        "analyzer": "english"
-                    }
+    ```
+    PUT titles
+    {
+        "mappings": {
+            "properties": {
+                "title": {
+                    "type": "text",
+                    "analyzer": "english"
                 }
             }
         }
-        ```
+    }
+    ```
 
-        improve:
+    improve:
 
-        ```
-        PUT titles
-        {
-            "mappings": {
-                "properties": {
-                    "title": {
-                        "type": "text",
-                        "analyzer": "english",
-                        "fields": {"std": {"type": "text", "analyzer": "standard"}}
-                    }
+    ```
+    PUT titles
+    {
+        "mappings": {
+            "properties": {
+                "title": {
+                    "type": "text",
+                    "analyzer": "english",
+                    "fields": {"std": {"type": "text", "analyzer": "standard"}}
                 }
             }
         }
-        ```
+    }
+    ```
 
-        Most fields
+    Most fields
 
-        ```
-        GET titles/_search
-        {
-            "query": {
-                "multi_match": {
-                    "query": "barking dogs",
-                    "type": "most_fields",
-                    "fields": ["title", "title.std"]
-                }
+    ```
+    GET titles/_search
+    {
+        "query": {
+            "multi_match": {
+                "query": "barking dogs",
+                "type": "most_fields",
+                "fields": ["title", "title.std"]
             }
         }
-        ```
+    }
+    ```
 
 * Cross Field
     * Name, Address, and etc information, to find information in multiple fields.
