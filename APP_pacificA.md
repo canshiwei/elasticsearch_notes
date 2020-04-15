@@ -118,3 +118,6 @@
 * Paxos is unable to process any request when a majority of the replicas becomes unavailable
 * With Paxos, a replica group can reconfigure itself by treating a reconfiguration as a consensus decision in the current configuration, new replica must contact a majority in the current configuration to transfer the state properly
     * Primary/Backup is simple with the help of the separate configuration manager
+
+#### Reference
+[PacificA: Replication in Log-Based Distributed Storage Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf)
